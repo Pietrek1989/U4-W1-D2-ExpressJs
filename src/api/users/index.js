@@ -29,16 +29,18 @@ authorsRouter.get("/", (request, response) => {
   response.send(authorsArray);
 });
 
-authorsRouter.get("/:userId", (request, response) => {
+authorsRouter.get("/:authorId", (request, response) => {
   const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
-  const user = authorsArray.find((user) => user.id === request.params.userId);
-  response.send(user);
+  const author = authorsArray.find(
+    (author) => author.id === request.params.authorId
+  );
+  response.send(author);
 });
 
-authorsRouter.put("/:userId", (request, response) => {
+authorsRouter.put("/:authorId", (request, response) => {
   const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
   const index = authorsArray.findIndex(
-    (author) => author.id === request.params.userId
+    (author) => author.id === request.params.authorId
   );
   const oldAuthor = authorsArray[index];
   const updatedAuthor = {
@@ -51,11 +53,11 @@ authorsRouter.put("/:userId", (request, response) => {
   response.send(updatedAuthor);
 });
 
-authorsRouter.delete("/:userId", (request, response) => {
+authorsRouter.delete("/:authorId", (request, response) => {
   const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
   const remainingAuthors = authorsArray.filter(
-    (author) => author.id !== request.params.userId
-  ); // ! = =
+    (author) => author.id !== request.params.authorId
+  );
   fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors));
   response.status(204).send();
 });
