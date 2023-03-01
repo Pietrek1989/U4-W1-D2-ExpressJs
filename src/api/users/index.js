@@ -11,13 +11,20 @@ const authorsJSONPath = join(
 );
 
 authorsRouter.post("/", (request, response) => {
+  const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
   const newAuthor = {
     ...request.body,
     createdAt: new Date(),
     updatedAt: new Date(),
     id: uniqid(),
   };
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
+  const alreadyEmail = authorsArray.find(
+    (author) => author.email === request.body.email
+  );
+  if (alreadyEmail) {
+    response.status(400).send("Email already exist, please pick different one");
+    return;
+  }
   authorsArray.push(newAuthor);
   fs.writeFileSync(authorsJSONPath, JSON.stringify(authorsArray));
   response.status(201).send({ id: newAuthor.id });
